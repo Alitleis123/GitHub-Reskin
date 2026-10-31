@@ -44,6 +44,8 @@ test("dark themes bring GitHub's dark code and diff colors, light themes the lig
   const light = css(palette({ theme: "solarized-light" }));
   assert.match(dark, /--prettylights-syntax-keyword:#ff7b72 !important/);
   assert.match(light, /--prettylights-syntax-keyword:#cf222e !important/);
+  // High contrast and colorblind palettes point some diff colors elsewhere, so those are reset too.
+  assert.match(light, /--diffBlob-additionWord-fgColor:var\(--fgColor-default\) !important/);
   // The theme's own colors come after GitHub's, so they win.
   assert.ok(dark.lastIndexOf("--bgColor-default:#0a0a0b") > dark.indexOf("--bgColor-default:"));
 });
