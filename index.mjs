@@ -29,7 +29,7 @@ export async function fetchCalendar(username, token) {
     headers: {
       authorization: `bearer ${token}`,
       "content-type": "application/json",
-      "user-agent": "better-github",
+      "user-agent": "github-reskin",
     },
     body: JSON.stringify({ query: QUERY, variables: { login: username } }),
   });
