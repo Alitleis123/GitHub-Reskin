@@ -80,7 +80,7 @@ It redraws every morning from the same calendar GitHub uses, through the GraphQL
 | `output` | `contributions.svg` | Where the SVG goes |
 | `token` | the workflow token | Token for the GraphQL API |
 
-Colors are 6-digit hex. Private contributions show up as counts only if you turned on "Include private contributions on my profile" in your GitHub settings, same as the real graph.
+Colors are 6-digit hex. With the default workflow token, the graph shows what visitors see on your profile. That includes private contributions as plain counts if you turned on "Include private contributions on my profile" in your GitHub settings.
 
 To run it on your own computer, you need Node 20 or newer and a GitHub token. With the GitHub CLI:
 

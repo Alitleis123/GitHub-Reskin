@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Draws a GitHub contribution graph as an SVG in any color.
+import { realpathSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
-import { pathToFileURL } from "node:url";
+import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
 
 const QUERY = `query($login: String!) {
@@ -48,6 +49,11 @@ function rgb(color) {
   return [n >> 16, (n >> 8) & 255, n & 255];
 }
 
+// "F2A93B" or "#f2a93b" -> "#f2a93b"
+function hex(color) {
+  return "#" + rgb(color).map((v) => v.toString(16).padStart(2, "0")).join("");
+}
+
 // Moves color a toward color b. t = 0 gives a, t = 1 gives b.
 export function mix(a, b, t) {
   const [x, y] = [rgb(a), rgb(b)];
@@ -55,6 +61,7 @@ export function mix(a, b, t) {
 }
 
 export function render(calendar, { color = "#f2a93b", background = "#0a0a0b", text = "#ededea" } = {}) {
+  [color, background, text] = [color, background, text].map(hex);
   const shades = [mix(background, text, 0.08), ...[0.35, 0.55, 0.78, 1].map((t) => mix(background, color, t))];
   const muted = mix(background, text, 0.55);
   const { weeks, totalContributions } = calendar;
@@ -138,4 +145,5 @@ async function main() {
   console.log(`Wrote ${output} for ${username}: ${calendar.totalContributions} contributions`);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) await main();
+// Node resolves symlinks in import.meta.url, so resolve the launch path too.
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) await main();

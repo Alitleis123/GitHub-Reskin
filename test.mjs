@@ -25,6 +25,13 @@ test("says contribution for a single one", () => {
   assert.match(svg, />1 contribution in the last year</);
 });
 
+test("accepts colors without a hash and writes them with one", () => {
+  const svg = render({ totalContributions: 0, weeks: [] }, { color: "FF0000", background: "000000", text: "FFFFFF" });
+  assert.match(svg, /rx="12" fill="#000000"/);
+  assert.match(svg, /fill="#ffffff" font-family/);
+  assert.doesNotMatch(svg, /fill="[0-9a-f]{6}"/i);
+});
+
 test("mix blends hex colors", () => {
   assert.equal(mix("#000000", "#ffffff", 0.5), "#808080");
   assert.equal(mix("#0a0a0b", "#f2a93b", 1), "#f2a93b");
