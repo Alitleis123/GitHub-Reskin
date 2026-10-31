@@ -73,7 +73,11 @@
   function render() {
     const p = palette(settings);
     const style = document.documentElement.style;
-    for (const key of ["bg", "text", "surface", "border", "muted", "accent", "strong"]) style.setProperty(`--${key}`, p[key]);
+    for (const key of ["bg", "surface", "border", "muted", "strong"]) style.setProperty(`--${key}`, p[key]);
+    style.setProperty("--accent", p.link);
+    // The popup keeps readable text even while you try a text color that isn't.
+    style.setProperty("--text", p.ink);
+    $("warning").hidden = p.ink === p.text;
     style.colorScheme = p.dark ? "dark" : "light";
 
     $("enabled").checked = settings.enabled;
@@ -92,8 +96,10 @@
     $("status").textContent = settings.enabled ? (settings.custom ? `${name}, edited` : name) : "Off";
   }
 
+  // The card stays inert until settings load, so the load can't overwrite an early click.
   chrome.storage.local.get(DEFAULTS).then((stored) => {
     settings = stored;
     render();
+    document.querySelector("main").inert = false;
   });
 })();

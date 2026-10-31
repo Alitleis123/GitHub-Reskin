@@ -72,21 +72,26 @@
     const custom = settings.custom && EDITABLE.every((k) => isHex(settings.custom[k])) ? settings.custom : null;
     const { bg, text, accent, graph } = custom || theme;
     const dark = luminance(bg) < 0.18;
+    // If the chosen text color doesn't read on the background, derived colors and the
+    // popup use black or white instead. One of the two always reaches 4.5:1.
+    const ink =
+      contrast(text, bg) >= 4.5 ? text : contrast("#000000", bg) > contrast("#ffffff", bg) ? "#000000" : "#ffffff";
     return {
       dark,
       bg,
       text,
+      ink,
       accent,
       graph,
-      surface: (!custom && theme.surface) || mix(bg, text, 0.05),
-      border: (!custom && theme.border) || mix(bg, text, 0.18),
-      muted: readable((!custom && theme.muted) || mix(bg, text, 0.65), bg, text),
-      link: readable(accent, bg, text),
+      surface: (!custom && theme.surface) || mix(bg, ink, 0.05),
+      border: (!custom && theme.border) || mix(bg, ink, 0.18),
+      muted: readable((!custom && theme.muted) || mix(bg, ink, 0.65), bg, ink),
+      link: readable(accent, bg, ink),
       inset: mix(bg, "#000000", dark ? 0.3 : 0.03),
-      raised: mix(bg, text, 0.08),
-      hover: mix(bg, text, 0.12),
+      raised: mix(bg, ink, 0.08),
+      hover: mix(bg, ink, 0.12),
       strong: darkenForWhiteText(accent),
-      shades: [mix(bg, text, 0.09), ...[0.35, 0.55, 0.78, 1].map((t) => mix(bg, graph, t))],
+      shades: [mix(bg, ink, 0.09), ...[0.35, 0.55, 0.78, 1].map((t) => mix(bg, graph, t))],
     };
   }
 
@@ -150,7 +155,9 @@
       .join("\n");
     // The activity overview's shape has its holiday color in a fill attribute.
     const blob = `.js-highlight-blob{fill:${p.graph} !important;stroke:${p.graph} !important}`;
-    return `${blob}\n:root,[data-color-mode],[data-light-theme],[data-dark-theme]{${declarations}color-scheme:${p.dark ? "dark" : "light"} !important}\n${days}\n`;
+    // GitHub's own colors for the matching mode go first, so code, diffs and labels suit the background.
+    const mode = (globalThis.GitHubReskinModes || {})[p.dark ? "dark" : "light"] || "";
+    return `${blob}\n:root,[data-color-mode],[data-light-theme],[data-dark-theme]{${mode}${declarations}color-scheme:${p.dark ? "dark" : "light"} !important}\n${days}\n`;
   }
 
   globalThis.GitHubReskin = { THEMES, DEFAULTS, EDITABLE, palette, css, mix, contrast, isHex };

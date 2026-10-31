@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-<main class="card">
+<main class="card" inert>
   <header>
     <img src="icons/icon-32.png" width="20" height="20" alt="">
     <h1>GitHub Reskin</h1>
@@ -28,6 +28,7 @@
       <button type="button" id="reset" class="link">Reset to theme</button>
     </div>
     <div class="colors" id="colors"></div>
+    <p class="warning" id="warning" hidden>That text color is hard to read on this background, so borders, muted text and links use black or white instead.</p>
   </section>
 
   <footer>

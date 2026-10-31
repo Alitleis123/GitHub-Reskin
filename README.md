@@ -10,9 +10,9 @@ There's also a GitHub Action that draws your contribution graph as an SVG for yo
 
 Twelve themes come with it. The dark ones are Editing Suite, Dracula, Nord, Catppuccin Mocha, Gruvbox, Tokyo Night, Rosé Pine, One Dark and Solarized Dark. The light ones are Catppuccin Latte, Rosé Pine Dawn and Solarized Light.
 
-Under the themes are four colors you can change: background, text, accent and the contribution graph. GitHub Reskin works out the rest, like borders, muted text and button colors. If a muted text or link color would be hard to read on your background, GitHub Reskin nudges it toward your text color until it passes WCAG AA contrast. "Reset to theme" puts the theme's colors back. The switch at the top turns the theme off.
+Under the themes are four colors you can change: background, text, accent and the contribution graph. GitHub Reskin works out the rest, like borders, muted text and button colors. If a muted text or link color would be hard to read on your background, GitHub Reskin nudges it toward your text color until it passes WCAG AA contrast. If your text color itself is hard to read, the card warns you and the derived colors use black or white instead. "Reset to theme" puts the theme's colors back. The switch at the top turns the theme off.
 
-It recolors github.com and gist.github.com through the color variables GitHub's own CSS uses. It stores your settings in the browser and makes no network requests. To avoid a flash of GitHub's colors on a full page load, it also caches the generated CSS in github.com's local storage.
+It recolors github.com and gist.github.com through the color variables GitHub's own CSS uses. A dark theme also brings in GitHub's dark colors for code, diffs and labels, and a light theme brings the light ones, so code stays readable whichever mode your GitHub account is set to. It stores your settings in the browser and makes no network requests. To avoid a flash of GitHub's colors on a full page load, it also caches the generated CSS in github.com's local storage.
 
 ### Install
 
@@ -25,6 +25,8 @@ The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load i
 ### Add a theme
 
 Themes live in [`extension/themes.js`](extension/themes.js). A theme needs an `id`, a `name` and four colors: `bg`, `text`, `accent` and `graph`. You can also give `surface`, `border` and `muted` if the original palette has them. `node --test` checks that every theme keeps its text readable.
+
+GitHub's light and dark colors live in `extension/github-modes.js`. If GitHub changes them, `node scripts/github-modes.mjs` rebuilds that file from github.com's current CSS.
 
 ## The profile graph
 

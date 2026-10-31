@@ -6,15 +6,23 @@
 
   const style = document.createElement("style");
   style.id = "github-reskin";
+  // The cache is optional. Some browsers block site storage, so failures are ignored.
+  const cache = (action) => {
+    try {
+      return action();
+    } catch {
+      return null;
+    }
+  };
+
   // Paint the last theme right away so full page loads don't flash GitHub's colors.
-  style.textContent = localStorage.getItem(CACHE) || "";
+  style.textContent = cache(() => localStorage.getItem(CACHE)) || "";
   document.documentElement.append(style);
 
   function apply(settings) {
     const text = settings.enabled ? css(palette(settings)) : "";
     style.textContent = text;
-    if (text) localStorage.setItem(CACHE, text);
-    else localStorage.removeItem(CACHE);
+    cache(() => (text ? localStorage.setItem(CACHE, text) : localStorage.removeItem(CACHE)));
   }
 
   chrome.storage.local.get(DEFAULTS).then(apply);
