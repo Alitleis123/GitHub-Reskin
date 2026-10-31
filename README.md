@@ -1,20 +1,10 @@
 # GitHub Reskin
 
-Themes for GitHub. Click the extension, pick a theme or set your own colors, and every open GitHub tab repaints. That includes the contribution graph, which normally stays green or switches to whatever GitHub picks for a holiday.
+A browser extension that themes GitHub. Click it, pick a theme or set your own colors, and every open GitHub tab repaints. That includes the contribution graph, which normally stays green or switches to whatever GitHub picks for a holiday.
 
-There's also a GitHub Action that draws your contribution graph as an SVG for your profile README, so visitors see your colors too.
+The repo also has a GitHub Action that draws your contribution graph as an SVG in your colors, so visitors to your profile see them too.
 
-![1,401 contributions in the last year, in amber](example.svg)
-
-## The extension
-
-Twelve themes come with it. The dark ones are Editing Suite, Dracula, Nord, Catppuccin Mocha, Gruvbox, Tokyo Night, Rosé Pine, One Dark and Solarized Dark. The light ones are Catppuccin Latte, Rosé Pine Dawn and Solarized Light.
-
-Under the themes are four colors you can change: background, text, accent and the contribution graph. GitHub Reskin works out the rest, like borders, muted text and button colors. If a muted text or link color would be hard to read on your background, GitHub Reskin nudges it toward your text color until it passes WCAG AA contrast. Primary buttons get a darker shade of your accent when GitHub's white button text wouldn't read on the accent itself. If your text color itself is hard to read, the card warns you and the derived colors use black or white instead. "Reset to theme" puts the theme's colors back. The switch at the top turns the theme off.
-
-It recolors github.com and gist.github.com through the color variables GitHub's own CSS uses. A dark theme also brings in GitHub's standard dark colors for code, diffs and labels, and a light theme brings the light ones. They replace whatever your GitHub account uses, including the dimmed, high contrast, colorblind and tritanopia palettes, so code stays readable under any theme. If you rely on a colorblind palette, its diff colors go back to GitHub's standard red and green while a theme is on. It stores your settings in the browser and makes no network requests. To avoid a flash of GitHub's colors on a full page load, it also caches the generated CSS in github.com's local storage.
-
-### Install
+## Install
 
 The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load it from this repo:
 
@@ -22,13 +12,31 @@ The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load i
 2. Chrome, Edge, Brave or Arc: open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick the `extension` folder.
 3. Firefox 140 or newer: open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on and pick `extension/manifest.json`. Firefox drops temporary add-ons when it restarts.
 
-### Add a theme
+## Themes and colors
 
-Themes live in [`extension/themes.js`](extension/themes.js). A theme needs an `id`, a `name` and four colors: `bg`, `text`, `accent` and `graph`. You can also give `surface`, `border` and `muted` if the original palette has them. `node --test` checks that every theme keeps its text readable.
+Twelve themes come with it. The dark ones are Editing Suite, Dracula, Nord, Catppuccin Mocha, Gruvbox, Tokyo Night, Rosé Pine, One Dark and Solarized Dark. The light ones are Catppuccin Latte, Rosé Pine Dawn and Solarized Light.
 
-GitHub's light and dark colors live in `extension/github-modes.js`. If GitHub changes them, `node scripts/github-modes.mjs` rebuilds that file from github.com's current CSS.
+Under the themes you can change four colors: background, text, accent and the contribution graph. GitHub Reskin works out the rest, like borders, muted text and button colors. "Reset to theme" puts the theme's colors back, and the switch at the top turns the theme off.
 
-## The profile graph
+It keeps GitHub readable whatever you pick:
+
+- Muted text and links move toward your text color until they reach WCAG AA contrast, 4.5:1.
+- Primary buttons get a darker shade of your accent when GitHub's white button text wouldn't read on the accent itself.
+- If your text color is hard to read on your background, the popup warns you. Borders, muted text and links are then worked out from black or white instead.
+
+## How it works
+
+The extension recolors github.com and gist.github.com through the color variables GitHub's own CSS uses. A dark theme also brings in GitHub's standard dark colors for code, diffs and labels, and a light theme brings the light ones. These replace whatever palette your GitHub account uses, including dimmed, high contrast, colorblind and tritanopia, so code stays readable under any theme. If you use a colorblind palette, diffs go back to GitHub's standard red and green while a theme is on.
+
+Your settings stay in the browser, and the extension makes no network requests. It also caches the generated CSS in github.com's local storage, so a full page load doesn't flash GitHub's own colors first.
+
+## Add a theme
+
+Themes live in [`extension/themes.js`](extension/themes.js). A theme needs an `id`, a `name` and four colors: `bg`, `text`, `accent` and `graph`. You can also give `surface`, `border` and `muted` if the original palette has them. Run `node --test` to check that every theme keeps its text, links and button text readable.
+
+GitHub's standard light and dark colors live in `extension/github-modes.js`, which is generated. If GitHub changes its colors, `node scripts/github-modes.mjs` rebuilds that file from github.com's current CSS.
+
+## Contribution graph for your profile
 
 The extension only changes what you see. To show your colors to everyone who visits your profile, add this workflow to your profile repo, the one named after you, like `you/you`. Save it as `.github/workflows/contributions.yml`:
 
@@ -71,7 +79,7 @@ Run it once from the Actions tab, then put this in your README:
 <img src="assets/contributions.svg" alt="My GitHub contributions over the last year" width="100%">
 ```
 
-It redraws every morning from the same calendar GitHub uses, through the GraphQL API, so busy and quiet days shade the way they do on your profile. GitHub still shows its own graph under your README, since there's no setting to hide it.
+The workflow redraws the graph every day at 06:17 UTC. It reads the same calendar GitHub uses, through the GraphQL API, so busy and quiet days shade the way they do on your profile. GitHub still shows its own graph under your README, since there's no setting to hide it.
 
 | Input | Default | What it does |
 | --- | --- | --- |
