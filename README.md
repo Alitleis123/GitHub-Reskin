@@ -47,7 +47,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: sidebandstudio/GitHub-Reskin@v1
+      - uses: Alitleis123/GitHub-Reskin@v1
         with:
           output: assets/contributions.svg
           color: "#f2a93b"
@@ -101,7 +101,7 @@ The theme palettes come from these MIT-licensed projects:
 - [One Dark](https://github.com/atom/atom/tree/master/packages/one-dark-syntax)
 - [Solarized](https://ethanschoonover.com/solarized/)
 
-Editing Suite is the amber and near-black from [Ali Tleis's profile](https://github.com/Alitleis123).
+Editing Suite is the amber and near-black from [my profile](https://github.com/Alitleis123).
 
 ## License
 
