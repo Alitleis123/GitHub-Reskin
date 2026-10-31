@@ -10,9 +10,9 @@ There's also a GitHub Action that draws your contribution graph as an SVG for yo
 
 Twelve themes come with it. The dark ones are Editing Suite, Dracula, Nord, Catppuccin Mocha, Gruvbox, Tokyo Night, Rosé Pine, One Dark and Solarized Dark. The light ones are Catppuccin Latte, Rosé Pine Dawn and Solarized Light.
 
-Under the themes are four colors you can change: background, text, accent and the contribution graph. GitHub Reskin works out the rest, like borders, muted text and button colors. If a muted text or link color would be hard to read on your background, GitHub Reskin nudges it toward your text color until it passes WCAG AA contrast. If your text color itself is hard to read, the card warns you and the derived colors use black or white instead. "Reset to theme" puts the theme's colors back. The switch at the top turns the theme off.
+Under the themes are four colors you can change: background, text, accent and the contribution graph. GitHub Reskin works out the rest, like borders, muted text and button colors. If a muted text or link color would be hard to read on your background, GitHub Reskin nudges it toward your text color until it passes WCAG AA contrast. Primary buttons get a darker shade of your accent when GitHub's white button text wouldn't read on the accent itself. If your text color itself is hard to read, the card warns you and the derived colors use black or white instead. "Reset to theme" puts the theme's colors back. The switch at the top turns the theme off.
 
-It recolors github.com and gist.github.com through the color variables GitHub's own CSS uses. A dark theme also brings in GitHub's dark colors for code, diffs and labels, and a light theme brings the light ones, so code stays readable whichever mode your GitHub account is set to. It stores your settings in the browser and makes no network requests. To avoid a flash of GitHub's colors on a full page load, it also caches the generated CSS in github.com's local storage.
+It recolors github.com and gist.github.com through the color variables GitHub's own CSS uses. A dark theme also brings in GitHub's standard dark colors for code, diffs and labels, and a light theme brings the light ones. They replace whatever your GitHub account uses, including the dimmed, high contrast, colorblind and tritanopia palettes, so code stays readable under any theme. If you rely on a colorblind palette, its diff colors go back to GitHub's standard red and green while a theme is on. It stores your settings in the browser and makes no network requests. To avoid a flash of GitHub's colors on a full page load, it also caches the generated CSS in github.com's local storage.
 
 ### Install
 
@@ -20,7 +20,7 @@ The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load i
 
 1. Download the repo (Code, then Download ZIP) and unzip it.
 2. Chrome, Edge, Brave or Arc: open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick the `extension` folder.
-3. Firefox: open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on and pick `extension/manifest.json`. Firefox drops temporary add-ons when it restarts.
+3. Firefox 140 or newer: open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on and pick `extension/manifest.json`. Firefox drops temporary add-ons when it restarts.
 
 ### Add a theme
 
@@ -82,7 +82,7 @@ It redraws every morning from the same calendar GitHub uses, through the GraphQL
 | `output` | `contributions.svg` | Where the SVG goes |
 | `token` | the workflow token | Token for the GraphQL API |
 
-Colors are 6-digit hex. With the default workflow token, the graph shows what visitors see on your profile. That includes private contributions as plain counts if you turned on "Include private contributions on my profile" in your GitHub settings.
+Colors are 6-digit hex, with or without the `#`. Quote them when you include the `#`, because YAML reads an unquoted `#` as the start of a comment. With the default workflow token, the graph shows what visitors see on your profile. That includes private contributions as plain counts if you turned on "Include private contributions on my profile" in your GitHub settings.
 
 To run it on your own computer, you need Node 20 or newer and a GitHub token. With the GitHub CLI:
 
