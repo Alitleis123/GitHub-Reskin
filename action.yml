@@ -1,0 +1,30 @@
+name: Better GitHub contribution graph
+description: Draws your GitHub contribution graph as an SVG in any color.
+author: Sideband Studio
+branding:
+  icon: grid
+  color: orange
+
+inputs:
+  username:
+    description: GitHub user whose contributions to draw.
+    default: ${{ github.repository_owner }}
+  token:
+    description: Token for the GitHub GraphQL API. The workflow token works.
+    default: ${{ github.token }}
+  output:
+    description: Where to write the SVG.
+    default: contributions.svg
+  color:
+    description: Color for the busiest days. Quieter days get fainter mixes of it.
+    default: "#f2a93b"
+  background:
+    description: Panel color.
+    default: "#0a0a0b"
+  text:
+    description: Text color.
+    default: "#ededea"
+
+runs:
+  using: node24
+  main: index.mjs

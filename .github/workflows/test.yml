@@ -1,0 +1,25 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - run: node --test
+
+      - name: Draw a real graph with the action
+        uses: ./
+        with:
+          username: ${{ github.actor }}
+          output: out/contributions.svg
+
+      - run: grep -q 'contributions in the last year' out/contributions.svg
