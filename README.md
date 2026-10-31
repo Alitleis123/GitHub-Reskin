@@ -8,9 +8,11 @@ The repo also has a GitHub Action that draws your contribution graph as an SVG i
 
 The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load it from this repo:
 
-1. Download the repo (Code, then Download ZIP) and unzip it.
+1. On the repo page, click Code, then Download ZIP, and unzip it.
 2. Chrome, Edge, Brave or Arc: open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick the `extension` folder.
 3. Firefox 140 or newer: open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on and pick `extension/manifest.json`. Firefox drops temporary add-ons when it restarts.
+
+Reload any GitHub or Gist tabs you already had open, then click GitHub Reskin in your browser's extensions menu to pick a theme.
 
 ## Themes and colors
 
@@ -18,11 +20,11 @@ Twelve themes come with it. The dark ones are Editing Suite, Dracula, Nord, Catp
 
 Under the themes you can change four colors: background, text, accent and the contribution graph. GitHub Reskin works out the rest, like borders, muted text and button colors. "Reset to theme" puts the theme's colors back, and the switch at the top turns the theme off.
 
-It keeps GitHub readable whatever you pick:
+It adjusts the colors it works out so they stay readable:
 
 - Muted text and links move toward your text color until they reach WCAG AA contrast, 4.5:1.
 - Primary buttons get a darker shade of your accent when GitHub's white button text wouldn't read on the accent itself.
-- If your text color is hard to read on your background, the popup warns you. Borders, muted text and links are then worked out from black or white instead.
+- If your text color is hard to read on your background, the popup warns you. GitHub's main text still uses your color, but borders, muted text and links are then worked out from black or white instead.
 
 ## How it works
 
@@ -79,7 +81,7 @@ Run it once from the Actions tab, then put this in your README:
 <img src="assets/contributions.svg" alt="My GitHub contributions over the last year" width="100%">
 ```
 
-The workflow redraws the graph every day at 06:17 UTC. It reads the same calendar GitHub uses, through the GraphQL API, so busy and quiet days shade the way they do on your profile. GitHub still shows its own graph under your README, since there's no setting to hide it.
+The workflow redraws the graph once a day, starting around 06:17 UTC. GitHub can start scheduled runs late. It reads the same calendar GitHub uses, through the GraphQL API, so busy and quiet days shade the way they do on your profile. GitHub still shows its own graph under your README, since there's no setting to hide it.
 
 | Input | Default | What it does |
 | --- | --- | --- |
