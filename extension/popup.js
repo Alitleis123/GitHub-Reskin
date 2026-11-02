@@ -1,14 +1,13 @@
 // The color card. Saves to storage.local, and the content script repaints GitHub on change.
-// The extension's popup shows it on its own page, and the userscript in a panel on GitHub.
+// The extension's popup shows it on its own page, and the userscript in a frame on GitHub.
 (function () {
   "use strict";
   const { THEMES, DEFAULTS, EDITABLE, palette, isHex } = globalThis.GitHubReskin;
   const LABELS = { bg: "Background", text: "Text", accent: "Accent", graph: "Contribution graph" };
 
-  // root is the popup's document or the userscript panel's shadow root.
-  function card(root) {
-    const $ = (id) => root.getElementById(id);
-    const host = root.host || root.documentElement;
+  // doc is the popup's page or the userscript's frame.
+  function card(doc) {
+    const $ = (id) => doc.getElementById(id);
     const currentTheme = () => THEMES.find((t) => t.id === settings.theme) || THEMES[0];
     let settings = { ...DEFAULTS };
 
@@ -25,21 +24,21 @@
     }
 
     for (const theme of THEMES) {
-      const button = document.createElement("button");
+      const button = doc.createElement("button");
       button.type = "button";
       button.className = "theme";
       button.dataset.id = theme.id;
-      const swatch = document.createElement("span");
+      const swatch = doc.createElement("span");
       swatch.className = "swatch";
       swatch.style.background = theme.bg;
       const { shades } = palette({ theme: theme.id });
       // Two weeks of the theme's graph shades.
       for (const level of [0, 1, 3, 2, 4, 1, 0, 2, 4, 3, 1, 0, 3, 4]) {
-        const day = document.createElement("i");
+        const day = doc.createElement("i");
         day.style.background = shades[level];
         swatch.append(day);
       }
-      const name = document.createElement("span");
+      const name = doc.createElement("span");
       name.className = "name";
       name.textContent = theme.name;
       button.append(swatch, name);
@@ -48,14 +47,14 @@
     }
 
     for (const key of EDITABLE) {
-      const row = document.createElement("label");
+      const row = doc.createElement("label");
       row.className = "color";
-      const label = document.createElement("span");
+      const label = doc.createElement("span");
       label.textContent = LABELS[key];
-      const picker = document.createElement("input");
+      const picker = doc.createElement("input");
       picker.type = "color";
       picker.setAttribute("aria-label", `${LABELS[key]} color`);
-      const hex = document.createElement("input");
+      const hex = doc.createElement("input");
       hex.type = "text";
       hex.spellcheck = false;
       hex.maxLength = 7;
@@ -77,7 +76,7 @@
 
     function render() {
       const p = palette(settings);
-      const style = host.style;
+      const style = doc.documentElement.style;
       for (const key of ["bg", "surface", "border", "muted", "strong"]) style.setProperty(`--${key}`, p[key]);
       style.setProperty("--accent", p.link);
       // The card keeps readable text even while you try a text color that isn't.
@@ -86,13 +85,13 @@
       style.colorScheme = p.dark ? "dark" : "light";
 
       $("enabled").checked = settings.enabled;
-      root.querySelector("main").classList.toggle("off", !settings.enabled);
+      doc.body.classList.toggle("off", !settings.enabled);
       for (const button of $("themes").children) {
         button.setAttribute("aria-pressed", String(button.dataset.id === currentTheme().id));
       }
       for (const input of $("colors").querySelectorAll("input")) {
         // Leave the field you're typing in alone.
-        if (root.activeElement === input) continue;
+        if (doc.activeElement === input) continue;
         input.value = p[input.dataset.key];
         input.removeAttribute("aria-invalid");
       }
@@ -105,7 +104,7 @@
     chrome.storage.local.get(DEFAULTS).then((stored) => {
       settings = stored;
       render();
-      root.querySelector("main").inert = false;
+      doc.querySelector("main").inert = false;
     });
   }
 
