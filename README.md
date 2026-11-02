@@ -16,7 +16,7 @@ The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load i
 
 Firefox only keeps an unsigned extension until it restarts, and Safari can't load one at all. For those browsers, GitHub Reskin also comes as a userscript with the same themes and color card, and it stays installed.
 
-1. Install a userscript manager. In Firefox, use Violentmonkey or Tampermonkey. In Safari on a Mac, iPhone or iPad, use Userscripts or Tampermonkey.
+1. Install a userscript manager. In Firefox, use [Violentmonkey](https://violentmonkey.github.io) or [Tampermonkey](https://www.tampermonkey.net). In Safari on a Mac, iPhone or iPad, use [Userscripts](https://github.com/quoid/userscripts) or Tampermonkey. Safari asks you to turn the extension on in its settings and allow it on github.com.
 2. Open [github-reskin.user.js](https://raw.githubusercontent.com/sidebandstudio/GitHub-Reskin/main/userscript/github-reskin.user.js) and install it from your manager's prompt. In Userscripts, the prompt is under its toolbar button.
 3. Reload any GitHub or Gist tabs you already had open.
 

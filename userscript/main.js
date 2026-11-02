@@ -1,22 +1,21 @@
 // Runs GitHub Reskin as a userscript, for browsers that can't keep the extension installed.
 // scripts/userscript.mjs puts this first in github-reskin.user.js, then the extension's own
 // scripts, all inside one function. This chrome object stands in for the extension's storage,
-// so content.js and popup.js run unchanged.
-const KEY = "settings";
+// so content.js and popup.js run unchanged. Like the extension, it keeps each setting under its
+// own key, so a save only writes what changed.
 const listeners = [];
-let saved = {};
 const notify = () => listeners.forEach((listener) => listener({}, "local"));
 
 const chrome = {
   storage: {
     local: {
       async get(defaults) {
-        saved = { ...defaults, ...(await GM.getValue(KEY, {})) };
-        return { ...saved };
+        const keys = Object.keys(defaults);
+        const values = await Promise.all(keys.map((key) => GM.getValue(key, defaults[key])));
+        return Object.fromEntries(keys.map((key, i) => [key, values[i]]));
       },
       async set(patch) {
-        saved = { ...saved, ...patch };
-        await GM.setValue(KEY, saved);
+        await Promise.all(Object.entries(patch).map(([key, value]) => GM.setValue(key, value)));
         notify();
       },
     },
@@ -25,7 +24,8 @@ const chrome = {
 };
 
 // A userscript can't hear another tab save, so a tab repaints when you switch back to it.
-document.addEventListener("visibilitychange", () => document.hidden || notify());
+// The card closes when you leave, like the extension's popup, so it never shows old settings.
+document.addEventListener("visibilitychange", () => (document.hidden ? close() : notify()));
 
 // The popup's card, floating over the page. Popup.css styles the card and these rules the panel.
 const HOST_CSS = `:host {

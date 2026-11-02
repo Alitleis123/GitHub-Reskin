@@ -12,7 +12,7 @@ test("the committed userscript matches the extension", async () => {
 });
 
 test("the userscript paints from userscript storage and repaints when you come back to the tab", async () => {
-  const values = { settings: { theme: "nord" } };
+  const values = { theme: "nord" };
   const events = {};
   const style = {};
   const document = {
@@ -30,12 +30,12 @@ test("the userscript paints from userscript storage and repaints when you come b
   await settle();
   assert.match(style.textContent, /--bgColor-default:#2e3440 !important/);
 
-  values.settings = { theme: "dracula" };
+  values.theme = "dracula";
   events.visibilitychange();
   await settle();
   assert.match(style.textContent, /--bgColor-default:#282a36 !important/);
 
-  values.settings = { enabled: false };
+  values.enabled = false;
   events.visibilitychange();
   await settle();
   assert.equal(style.textContent, "");
