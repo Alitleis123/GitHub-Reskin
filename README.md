@@ -6,13 +6,23 @@ The repo also has a GitHub Action that draws your contribution graph as an SVG i
 
 ## Install
 
-The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load it from this repo:
+The extension isn't in the Chrome Web Store or on Firefox Add-ons yet. To load it from this repo in Chrome, Edge, Brave or Arc:
 
 1. On the repo page, click Code, then Download ZIP, and unzip it.
-2. Chrome, Edge, Brave or Arc: open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick the `extension` folder.
-3. Firefox 140 or newer: open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on and pick `extension/manifest.json`. Firefox drops temporary add-ons when it restarts.
+2. Open `chrome://extensions`, turn on Developer mode, click Load unpacked and pick the `extension` folder.
+3. Reload any GitHub or Gist tabs you already had open, then click GitHub Reskin in your browser's extensions menu to pick a theme.
 
-Reload any GitHub or Gist tabs you already had open, then click GitHub Reskin in your browser's extensions menu to pick a theme.
+### Firefox, Safari and other browsers
+
+Firefox only keeps an unsigned extension until it restarts, and Safari can't load one at all. For those browsers, GitHub Reskin also comes as a userscript with the same themes and color card, and it stays installed.
+
+1. Install a userscript manager. In Firefox, use Violentmonkey or Tampermonkey. In Safari on a Mac, iPhone or iPad, use Userscripts or Tampermonkey.
+2. Open [github-reskin.user.js](https://raw.githubusercontent.com/sidebandstudio/GitHub-Reskin/main/userscript/github-reskin.user.js) and install it from your manager's prompt. In Userscripts, the prompt is under its toolbar button.
+3. Reload any GitHub or Gist tabs you already had open.
+
+To pick a theme, choose Theme and colors from your manager's menu. Userscripts has no menu, so open `https://github.com/#reskin` instead. Click outside the card or press Escape to close it. Other GitHub tabs pick up your change when you switch back to them.
+
+You can also try the extension itself in Firefox 140 or newer. Open `about:debugging#/runtime/this-firefox`, click Load Temporary Add-on and pick `extension/manifest.json`. Firefox removes it when it restarts.
 
 ## Themes and colors
 
@@ -30,13 +40,15 @@ It adjusts the colors it works out so they stay readable:
 
 The extension recolors github.com and gist.github.com through the color variables GitHub's own CSS uses. A dark theme also brings in GitHub's standard dark colors for code, diffs and labels, and a light theme brings the light ones. These replace whatever palette your GitHub account uses, including dimmed, high contrast, colorblind and tritanopia, so code stays readable under any theme. If you use a colorblind palette, diffs go back to GitHub's standard red and green while a theme is on.
 
-Your settings stay in the browser, and the extension makes no network requests. It also caches the generated CSS in github.com's local storage, so a full page load doesn't flash GitHub's own colors first.
+Your settings stay in the browser, and the extension makes no network requests. The userscript runs the same code and keeps your settings in the userscript manager's storage. The manager checks this repo for userscript updates. Both cache the generated CSS in github.com's local storage, so a full page load doesn't flash GitHub's own colors first.
 
 ## Add a theme
 
 Themes live in [`extension/themes.js`](extension/themes.js). A theme needs an `id`, a `name` and four colors: `bg`, `text`, `accent` and `graph`. You can also give `surface`, `border` and `muted` if the original palette has them. Run `node --test` to check that every theme keeps its text, links and button text readable.
 
 GitHub's standard light and dark colors live in `extension/github-modes.js`, which is generated. If GitHub changes its colors, `node scripts/github-modes.mjs` rebuilds that file from github.com's current CSS.
+
+The userscript in `userscript/github-reskin.user.js` is generated too, from the extension and `userscript/main.js`. After changing either, run `node scripts/userscript.mjs`. `node --test` fails while the userscript is out of date. Userscript managers only install an update when its version goes up, so raise `version` in `extension/manifest.json` when you change what users see.
 
 ## Contribution graph for your profile
 
