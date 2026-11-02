@@ -23,23 +23,29 @@ const chrome = {
   },
 };
 
-// The popup's card, floating over the page. Popup.css styles the card and these rules the panel.
-const HOST_CSS = `:host {
-  all: initial; display: block; position: fixed; top: 16px; right: 16px; z-index: 2147483647;
-  width: 336px; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); overflow: auto;
-  border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 8px 24px rgb(0 0 0 / .4);
-  background: var(--bg); color: var(--text);
-  font: 13px/1.4 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-}`;
+// The popup's card, in a frame over the page. Keys typed in a frame never reach the page, so
+// GitHub's shortcuts can't fire while you type a hex value, and popup.css styles it unchanged.
+const FRAME_CSS = `position: fixed; top: 16px; right: 16px; z-index: 2147483647; height: 0;
+  width: 336px; max-width: calc(100vw - 32px); max-height: calc(100vh - 32px); border: 0; border-radius: 12px;
+  box-shadow: 0 0 0 1px rgb(128 128 128 / .35), 0 8px 24px rgb(0 0 0 / .4);`;
 let panel = null;
 
 function open() {
   if (panel) return;
-  panel = document.createElement("github-reskin");
-  const root = panel.attachShadow({ mode: "open" });
-  root.innerHTML = `<style>${POPUP_CSS}\n${HOST_CSS}</style>${POPUP_HTML}`;
-  document.documentElement.append(panel);
-  globalThis.GitHubReskin.card(root);
+  const frame = (panel = document.createElement("iframe"));
+  frame.title = "GitHub Reskin";
+  frame.style.cssText = FRAME_CSS;
+  frame.srcdoc = `<!doctype html><meta charset="utf-8"><style>${POPUP_CSS}</style>${POPUP_HTML}`;
+  frame.addEventListener("load", () => {
+    const doc = frame.contentDocument;
+    // The frame takes the card's height, which changes when the contrast warning shows.
+    const fit = () => (frame.style.height = `${doc.body.offsetHeight}px`);
+    new MutationObserver(fit).observe(doc.body, { subtree: true, childList: true, attributes: true });
+    doc.addEventListener("keydown", (e) => e.key === "Escape" && close());
+    globalThis.GitHubReskin.card(doc);
+    fit();
+  });
+  document.documentElement.append(frame);
 }
 
 function close() {
@@ -67,15 +73,6 @@ document.addEventListener("visibilitychange", () => {
   openFromHash();
 });
 
-document.addEventListener("pointerdown", (e) => panel && !e.composedPath().includes(panel) && close(), true);
-// Escape closes the card. GitHub's shortcuts see keys typed in the card as coming from the
-// panel, not a text field, so typing "b" in a hex value would open blame. GitHub listens in the
-// capture phase, but this runs at document-start, before GitHub's scripts add their listeners,
-// so it can keep keys typed in the card from reaching them.
-for (const type of ["keydown", "keypress", "keyup"]) {
-  window.addEventListener(type, (e) => {
-    if (!panel) return;
-    if (e.type === "keydown" && e.key === "Escape") close();
-    else if (e.composedPath().includes(panel)) e.stopImmediatePropagation();
-  }, true);
-}
+// Clicks and keys inside the frame stay in the frame, so these only see the page.
+document.addEventListener("pointerdown", () => panel && close(), true);
+document.addEventListener("keydown", (e) => panel && e.key === "Escape" && close());
