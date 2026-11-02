@@ -35,7 +35,8 @@ function open() {
   const frame = (panel = document.createElement("iframe"));
   frame.title = "GitHub Reskin";
   frame.style.cssText = FRAME_CSS;
-  frame.srcdoc = `<!doctype html><meta charset="utf-8"><style>${POPUP_CSS}</style>${POPUP_HTML}`;
+  // The popup is 336px wide. The frame can be narrower on small phones, so the card fills it instead.
+  frame.srcdoc = `<!doctype html><meta charset="utf-8"><style>${POPUP_CSS}\nbody { width: auto; }</style>${POPUP_HTML}`;
   frame.addEventListener("load", () => {
     const doc = frame.contentDocument;
     // The frame takes the card's height, which changes when the contrast warning shows.
