@@ -1,6 +1,6 @@
 name: GitHub Reskin contribution graph
 description: Draws your GitHub contribution graph as an SVG in any color.
-author: Ali Tleis
+author: Sideband Studio
 branding:
   icon: grid
   color: orange
